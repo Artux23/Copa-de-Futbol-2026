@@ -1,0 +1,15 @@
+{
+  "name": "Copa de Futbol 2026",
+  "short_name": "Copa de Futbol 2026",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0b0d13",
+  "theme_color": "#8a1538",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/512/football2--v1.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

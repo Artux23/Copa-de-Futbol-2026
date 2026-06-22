@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa de Fútbol 
+      2026</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+    <style>
+        :root {
+            --primary: #8a1538;
+            --primary-light: #b2224d;
+            --secondary: #0b0d13;
+            --accent: #d4af37;
+            --light: #ffffff;
+            --dark: #ffffff;
+            --card-bg: rgba(11, 13, 19, 0.94);
+            --border: rgba(255, 255, 255, 0.15);
+            --success: #198754;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(90deg, #11381b 50%, #164222 50%);
+            background-size: 80px 100%;
+            background-attachment: fixed;
+            color: var(--dark);
+            line-height: 1.4;
+            padding-bottom: 75px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 1001;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .ticker-wrap {
+            background-color: var(--secondary);
+            color: var(--accent);
+            padding: 6px 0;
+            overflow: hidden;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 25s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .nav-tabs {
+            display: flex;
+            background-color: rgba(11, 13, 19, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+        }
+
+        .nav-tabs::-webkit-scrollbar { display: none; }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #b0b5bc;
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-btn.active {
+            color: white;
+            background-color: rgba(255,255,255,0.05);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .main-container {
+            max-width: 650px;
+            margin: 15px auto;
+            padding: 0 12px;
+        }
+
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        .match-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+        }
+
+        .match-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 700;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+        }
+
+        .match-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .team-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2px;
+            min-width: 0;
+        }
+
+        .team-name {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: normal;
+            word-wrap: break-word;
+            display: block;
+            width: 100%;
+            margin-top: 4px;
+            line-height: 1.2;
+        }
+
+        .team-origin {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--accent);
+            font-weight: bold;
+            margin-top: 2px;
+            background: rgba(214, 175, 55, 0.15);
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .team-flag {
+            font-size: 1.6rem;
+            display: inline-block;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .score-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin: 0 10px;
+        }
+
+        .score-input {
+            width: 38px;
+            height: 38px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+        }
+
+        .score-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+        }
+
+        .vs-text {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin: 0 6px;
+        }
+
+        .group-title {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px 8px 0 0;
+            margin-top: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            background: rgba(11, 13, 19, 0.95);
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 0.82rem;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.04);
+            color: var(--accent);
+            font-weight: 700;
+            padding: 10px 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 10px 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-weight: 600;
+            color: white;
+        }
+
+        tr.highlight-row td { background-color: rgba(255, 255, 255, 0.05); }
+        td.team-name-cell { text-align: left; font-weight: 700; white-space: nowrap; }
+
+        /* --- ESTILOS COMPONENTES DE PERFIL --- */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            border: 1px solid var(--border);
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 95px;
+            height: 95px;
+            margin: 0 auto 12px auto;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            background-color: rgba(255,255,255,0.08);
+        }
+
+        .file-label {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--accent);
+            color: var(--secondary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .profile-name-display {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+        }
+
+        .profile-info-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .profile-info-text strong {
+            color: var(--accent);
+        }
+
+        .inline-flag-display {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .btn-profile-action {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 14px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+
+        .btn-profile-action:active { background-color: var(--primary-light); }
+
+        .edit-form-container {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .edit-form-container.open { display: block; }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .profile-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        select.profile-input option {
+            background-color: #1a1d24;
+            color: white;
+        }
+
+        /* --- BOTÓN COMPARTIR UNIFICADO --- */
+        .social-share-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-trigger-share {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-trigger-share:active { filter: brightness(0.9); }
+
+        /* --- MODAL HOJA DE COMPARTIR (ACTION SHEET) --- */
+        .share-modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .share-modal-overlay.open { display: flex; }
+
+        .share-modal-sheet {
+            background-color: #161920;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            border-top: 2px solid var(--accent);
+            animation: slideUp 0.25s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .share-modal-sheet h3 {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .share-networks-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+
+        .share-networks-list li {
+            margin-bottom: 10px;
+        }
+
+        .share-network-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .share-network-item:active {
+            background-color: rgba(255,255,255,0.15);
+        }
+
+        .network-brand-icon {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+        }
+
+        .btn-modal-close {
+            background-color: #343a40;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-modal-close:active { background-color: #23272b; }
+
+        .marketplace-box { margin-top: 15px; }
+        .btn-download-app {
+            background: linear-gradient(135deg, #11381b, #198754);
+            color: white;
+            border: 1px solid var(--accent);
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .btn-download-app:active { filter: brightness(1.2); }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--secondary);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 3px solid var(--primary);
+            z-index: 1000;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.4);
+        }
+
+        .bottom-btn {
+            background: none;
+            border: none;
+            color: #a0a5bc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 33.33%;
+        }
+
+        .bottom-btn.active { color: var(--accent); }
+        .bottom-btn span.icon { font-size: 1.3rem; margin-bottom: 2px; }
+    </style>
+</head>
+
+    <header>
+        <h1>COPA DE FÚTBOL 2026</h1>
+    </header>
+
+    <div class="ticker-wrap">
+        <div class="ticker" id="ticker-text">⚽ Cargando motor deportivo... ⚽</div>
+    </div>
+
+    <div id="section-calendario" class="view-section active">
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="filterPhase('g-todos')">Todos</button>
+            <button class="nav-btn" onclick="filterPhase('g-j1')">Jornada 1</button>
+            <button class="nav-btn" onclick="filterPhase('g-j2')">Jornada 2</button>
+            <button class="nav-btn" onclick="filterPhase('g-j3')">Jornada 3</button>
+            <button class="nav-btn" onclick="filterPhase('g-el')">Eliminatorias</button>
+        </div>
+        <div class="main-container" id="matches-list-container"></div>
+    </div>
+
+    <div id="section-tablas" class="view-section">
+        <div class="main-container">
+            <div class="nav-tabs" style="position:static; margin-bottom:15px; border-radius:8px;">
+                <button id="tab-sub-grupos" class="nav-btn active" onclick="switchTableSubTab('grupos')" style="width:50%;">Grupos (A - L)</button>
+                <button id="tab-sub-terceros" class="nav-btn" onclick="switchTableSubTab('terceros')" style="width:50%;">Mejores Terceros</button>
+            </div>
+            <div id="sub-container-grupos"></div>
+            <div id="sub-container-terceros" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div id="section-perfil" class="view-section">
+        <div class="main-container">
+            <div class="profile-card">
+                
+                <div class="avatar-container">
+                    <img id="user-avatar" class="avatar-img" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238a1538'><path d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5-4-8-4z'/></svg>" alt="Avatar">
+                    <label class="file-label" for="avatar-uploader">📷</label>
+                    <input type="file" id="avatar-uploader" style="display: none;" accept="image/*" onchange="uploadAvatar()">
+                </div>
+
+                <div id="profile-view-mode">
+                    <div id="lbl-display-username" class="profile-name-display">Usuario Mundialista</div>
+                    <div class="profile-info-text">Nacionalidad: <span id="lbl-display-nacion" class="inline-flag-display">❓</span></div>
+                    <div class="profile-info-text">Equipo Favorito: <span id="lbl-display-favorito" class="inline-flag-display">❓</span></div>
+                    <div class="profile-info-text">Mi Campeón 2026: <span id="lbl-display-campeon" class="inline-flag-display">❓</span></div>
+                    <button class="btn-profile-action" onclick="toggleEditProfile(true)">⚙️ Editar Configuración</button>
+                </div>
+
+                <div id="profile-edit-mode" class="edit-form-container">
+                    <div class="form-group">
+                        <label>Nombre de Usuario</label>
+                        <input type="text" id="input-edit-username" class="profile-input" placeholder="Tu nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Nacionalidad</label>
+                        <select id="input-edit-nacion" class="profile-input"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Equipo Favorito</label>
+                        <select id="input-edit-favorito" class="profile-input"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pronóstico de Campeón</label>
+                        <select id="input-edit-campeon" class="profile-input"></select>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:14px;">
+                        <button class="btn-profile-action" style="background-color:var(--success); width:50%; margin:0;" onclick="saveProfileData()">Guardar</button>
+                        <button class="btn-profile-action" style="background-color:#6c757d; width:50%; margin:0;" onclick="toggleEditProfile(false)">Cancelar</button>
+                    </div>
+                </div>
+
+                <div class="social-share-section">
+                    <button class="btn-trigger-share" onclick="toggleShareModal(true)">🔗 Compartir Resultados</button>
+                </div>
+
+                <div class="marketplace-box">
+                    <button class="btn-download-app" onclick="goToMarketplace()">📥 Descargar App Completa</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="share-modal" class="share-modal-overlay" onclick="closeModalOnOuterClick(event)">
+        <div class="share-modal-sheet">
+            <h3>Compartir mi progreso en:</h3>
+            <ul class="share-networks-list">
+                <li>
+                    <a href="https://www.facebook.com/login" target="_blank" class="share-network-item" onclick="executeShareAction('Facebook')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" class="network-brand-icon" alt="FB">
+                        Facebook
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.instagram.com" target="_blank" class="share-network-item" onclick="executeShareAction('Instagram')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="network-brand-icon" alt="IG">
+                        Instagram
+                    </a>
+                </li>
+                <li>
+                    <a href="https://x.com/i/flow/login" target="_blank" class="share-network-item" onclick="executeShareAction('X')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/X_logo_2023.svg" class="network-brand-icon" alt="X">
+                        X / Twitter
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.whatsapp.com" target="_blank" class="share-network-item" onclick="executeShareAction('WhatsApp')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="network-brand-icon" alt="WA">
+                        WhatsApp
+                    </a>
+                </li>
+            </ul>
+            <button class="btn-modal-close" onclick="toggleShareModal(false)">Cerrar</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="bottom-btn active" id="btn-nav-cal" onclick="changeMainSection('calendario')">
+            <span class="icon">📅</span>Calendario
+        </button>
+        <button class="bottom-btn" id="btn-nav-tab" onclick="changeMainSection('tablas')">
+            <span class="icon">📊</span>Posiciones
+        </button>
+        <button class="bottom-btn" id="btn-nav-per" onclick="changeMainSection('perfil')">
+            <span class="icon">👤</span>Mi Perfil
+        </button>
+    </div>
+
+    <script>
+        // Array maestro oficial con los 48 equipos clasificados del Mundial 2026
+        const paisesMundialistas = [
+{ nombre: "Afganistán", bandera: "🇦🇫" }, { nombre: "Albania", bandera: "🇦🇱" }, { nombre: "Alemania", bandera: "🇩🇪" },
+    { nombre: "Andorra", bandera: "🇦🇩" }, { nombre: "Angola", bandera: "🇦🇴" }, { nombre: "Antigua y Barbuda", bandera: "🇦🇬" },
+    { nombre: "Arabia Saudita", bandera: "🇸🇦" }, { nombre: "Argelia", bandera: "🇩🇿" }, { nombre: "Argentina", bandera: "🇦🇷" },
+    { nombre: "Armenia", bandera: "🇦🇲" }, { nombre: "Australia", bandera: "🇦🇺" }, { nombre: "Austria", bandera: "🇦🇹" },
+    { nombre: "Azerbaiyán", bandera: "🇦🇿" }, { nombre: "Bahamas", bandera: "🇧🇸" }, { nombre: "Bangladés", bandera: "🇧🇩" },
+    { nombre: "Barbados", bandera: "🇧🇧" }, { nombre: "Baréin", bandera: "🇧🇭" }, { nombre: "Bélgica", bandera: "🇧🇪" },
+    { nombre: "Belice", bandera: "🇧🇿" }, { nombre: "Benín", bandera: "🇧🇯" }, { nombre: "Bielorrusia", bandera: "🇧🇾" },
+    { nombre: "Birmania", bandera: "🇲🇲" }, { nombre: "Bolivia", bandera: "🇧🇴" }, { nombre: "Bosnia y Herzegovina", bandera: "🇧🇦" },
+    { nombre: "Botsuana", bandera: "🇧🇼" }, { nombre: "Brasil", bandera: "🇧🇷" }, { nombre: "Brunéi", bandera: "🇧🇳" },
+    { nombre: "Bulgaria", bandera: "🇧🇬" }, { nombre: "Burkina Faso", bandera: "🇧🇫" }, { nombre: "Burundi", bandera: "🇧🇮" },
+    { nombre: "Bután", bandera: "🇧🇹" }, { nombre: "Cabo Verde", bandera: "🇨🇻" }, { nombre: "Camboya", bandera: "🇰🇭" },
+    { nombre: "Camerún", bandera: "🇨🇲" }, { nombre: "Canadá", bandera: "🇨🇦" }, { nombre: "Catar", bandera: "🇶🇦" },
+    { nombre: "Chad", bandera: "🇹🇩" }, { nombre: "Chile", bandera: "🇨🇱" }, { nombre: "China", bandera: "🇨🇳" },
+    { nombre: "Chipre", bandera: "🇨🇾" }, { nombre: "Ciudad del Vaticano", bandera: "🇻🇦" }, { nombre: "Colombia", bandera: "🇨🇴" },
+    { nombre: "Comoras", bandera: "🇰🇲" }, { nombre: "Corea del Norte", bandera: "🇰🇵" }, { nombre: "Corea del Sur", bandera: "🇰🇷" },
+    { nombre: "Costa de Marfil", bandera: "🇨🇮" }, { nombre: "Costa Rica", bandera: "🇨🇷" }, { nombre: "Croacia", bandera: "🇭🇷" },
+    { nombre: "Cuba", bandera: "🇨🇺" }, { nombre: "Dinamarca", bandera: "🇩🇰" }, { nombre: "Dominica", bandera: "🇩🇲" },
+    { nombre: "Ecuador", bandera: "🇪🇨" }, { nombre: "Egipto", bandera: "🇪🇬" }, { nombre: "El Salvador", bandera: "🇸🇻" },
+    { nombre: "Emiratos Árabes Unidos", bandera: "🇦🇪" }, { nombre: "Eritrea", bandera: "🇪🇷" }, { nombre: "Eslovaquia", bandera: "🇸🇰" },
+    { nombre: "Eslovenia", bandera: "🇸🇮" }, { nombre: "España", bandera: "🇪🇸" }, { nombre: "Estados Unidos", bandera: "🇺🇸" },
+    { nombre: "Estonia", bandera: "🇪🇪" }, { nombre: "Esuatini", bandera: "🇸🇿" }, { nombre: "Etiopía", bandera: "🇪🇹" },
+    { nombre: "Filipinas", bandera: "🇵🇭" }, { nombre: "Finlandia", bandera: "🇫🇮" }, { nombre: "Fiyi", bandera: "🇫🇯" },
+    { nombre: "Francia", bandera: "🇫🇷" }, { nombre: "Gabón", bandera: "🇬🇦" }, { nombre: "Gambia", bandera: "🇬🇲" },
+    { nombre: "Georgia", bandera: "🇬🇪" }, { nombre: "Ghana", bandera: "🇬🇭" }, { nombre: "Granada", bandera: "🇬🇩" },
+    { nombre: "Grecia", bandera: "🇬🇷" }, { nombre: "Guatemala", bandera: "🇬🇹" }, { nombre: "Guinea", bandera: "🇬🇳" },
+    { nombre: "Guinea Ecuatorial", bandera: "🇬🇶" }, { nombre: "Guinea-Bisáu", bandera: "🇬🇼" }, { nombre: "Guyana", bandera: "🇬🇾" },
+    { nombre: "Haití", bandera: "🇭🇹" }, { nombre: "Honduras", bandera: "🇭🇳" }, { nombre: "Hungría", bandera: "🇭🇺" },
+    { nombre: "India", bandera: "🇮🇳" }, { nombre: "Indonesia", bandera: "🇮🇩" }, { nombre: "Irak", bandera: "🇮🇶" },
+    { nombre: "Irán", bandera: "🇮🇷" }, { nombre: "Irlanda", bandera: "🇮🇪" }, { nombre: "Islandia", bandera: "🇮🇸" },
+    { nombre: "Islas Marshall", bandera: "🇲🇭" }, { nombre: "Islas Salomón", bandera: "🇸🇧" }, { nombre: "Israel", bandera: "🇮🇱" },
+    { nombre: "Italia", bandera: "🇮🇹" }, { nombre: "Jamaica", bandera: "🇯🇲" }, { nombre: "Japón", bandera: "🇯🇵" },
+    { nombre: "Jordania", bandera: "🇯🇴" }, { nombre: "Kazajistán", bandera: "🇰🇿" }, { nombre: "Kenia", bandera: "🇰🇪" },
+    { nombre: "Kirguistán", bandera: "🇰🇬" }, { nombre: "Kiribati", bandera: "🇰🇮" }, { nombre: "Kuwait", bandera: "🇰🇼" },
+    { nombre: "Laos", bandera: "🇱🇦" }, { nombre: "Lesoto", bandera: "🇱🇸" }, { nombre: "Letonia", bandera: "🇱🇻" },
+    { nombre: "Líbano", bandera: "🇱🇧" }, { nombre: "Liberia", bandera: "🇱🇷" }, { nombre: "Libia", bandera: "🇱🇾" },
+    { nombre: "Liechtenstein", bandera: "🇱🇮" }, { nombre: "Lituania", bandera: "🇱🇹" }, { nombre: "Luxemburgo", bandera: "🇱🇺" },
+    { nombre: "Macedonia del Norte", bandera: "🇲🇰" }, { nombre: "Madagascar", bandera: "🇲🇬" }, { nombre: "Malasia", bandera: "🇲🇾" },
+    { nombre: "Malaui", bandera: "🇲🇼" }, { nombre: "Maldivas", bandera: "🇲🇻" }, { nombre: "Malí", bandera: "🇲🇱" },
+    { nombre: "Malta", bandera: "🇲🇹" }, { nombre: "Marruecos", bandera: "🇲🇦" }, { nombre: "Mauricio", bandera: "🇲🇺" },
+    { nombre: "Mauritania", bandera: "🇲🇷" }, { nombre: "México", bandera: "🇲🇽" }, { nombre: "Micronesia", bandera: "🇫🇲" },
+    { nombre: "Moldavia", bandera: "🇲🇩" }, { nombre: "Mónaco", bandera: "🇲🇨" }, { nombre: "Mongolia", bandera: "🇲🇳" },
+    { nombre: "Montenegro", bandera: "🇲🇪" }, { nombre: "Mozambique", bandera: "🇲🇿" }, { nombre: "Namibia", bandera: "🇳🇦" },
+    { nombre: "Nauru", bandera: "🇳🇷" }, { nombre: "Nepal", bandera: "🇳🇵" }, { nombre: "Nicaragua", bandera: "🇳🇮" },
+    { nombre: "Níger", bandera: "🇳🇪" }, { nombre: "Nigeria", bandera: "🇳🇬" }, { nombre: "Noruega", bandera: "🇳🇴" },
+    { nombre: "Nueva Zelanda", bandera: "🇳🇿" }, { nombre: "Omán", bandera: "🇴🇲" }, { nombre: "Países Bajos", bandera: "🇳🇱" },
+    { nombre: "Pakistán", bandera: "🇵🇰" }, { nombre: "Palaos", bandera: "🇵🇼" }, { nombre: "Palestina", bandera: "🇵🇸" },
+    { nombre: "Panamá", bandera: "🇵🇦" }, { nombre: "Papúa Nueva Guinea", bandera: "🇵🇬" }, { nombre: "Paraguay", bandera: "🇵🇾" },
+    { nombre: "Perú", bandera: "🇵🇪" }, { nombre: "Polonia", bandera: "🇵🇱" }, { nombre: "Portugal", bandera: "🇵🇹" },
+    { nombre: "Reino Unido", bandera: "🇬🇧" }, { nombre: "República Centroafricana", bandera: "🇨🇫" }, { nombre: "República Checa", bandera: "🇨🇿" },
+    { nombre: "República Democrática del Congo", bandera: "🇨🇩" }, { nombre: "República Dominicana", bandera: "🇩🇴" }, { nombre: "Ruanda", bandera: "🇷🇼" },
+    { nombre: "Rumanía", bandera: "🇷🇴" }, { nombre: "Rusia", bandera: "🇷🇺" }, { nombre: "Samoa", bandera: "🇼🇸" },
+    { nombre: "San Cristóbal y Nieves", bandera: "🇰🇳" }, { nombre: "San Marino", bandera: "🇸🇲" }, { nombre: "San Vicente y las Granadinas", bandera: "🇻🇨" },
+    { nombre: "Santa Lucía", bandera: "🇱🇨" }, { nombre: "Santo Tomé y Príncipe", bandera: "🇸🇹" }, { nombre: "Senegal", bandera: "🇸🇳" },
+    { nombre: "Serbia", bandera: "🇷🇸" }, { nombre: "Seychelles", bandera: "🇸🇨" }, { nombre: "Sierra Leona", bandera: "🇸🇱" },
+    { nombre: "Singapur", bandera: "🇸🇬" }, { nombre: "Siria", bandera: "🇸🇾" }, { nombre: "Somalia", bandera: "🇸🇴" },
+    { nombre: "Sri Lanka", bandera: "🇱🇰" }, { nombre: "Sudáfrica", bandera: "🇿🇦" }, { nombre: "Sudán", bandera: "🇸🇩" },
+    { nombre: "Sudán del Sur", bandera: "🇸🇸" }, { nombre: "Suecia", bandera: "🇸🇪" }, { nombre: "Suiza", bandera: "🇨🇭" },
+    { nombre: "Surinam", bandera: "🇸🇷" }, { nombre: "Tailandia", bandera: "🇹🇭" }, { nombre: "Tanzania", bandera: "🇹🇿" },
+    { nombre: "Tayikistán", bandera: "🇹🇯" }, { nombre: "Timor Oriental", bandera: "🇹🇱" }, { nombre: "Togo", bandera: "🇹🇬" },
+    { nombre: "Tonga", bandera: "🇹🇴" }, { nombre: "Trinidad y Tobago", bandera: "🇹🇹" }, { nombre: "Túnez", bandera: "🇹🇳" },
+    { nombre: "Turkmenistán", bandera: "🇹🇲" }, { nombre: "Turquía", bandera: "🇹🇷" }, { nombre: "Tuvalu", bandera: "🇹🇻" },
+    { nombre: "Ucrania", bandera: "🇺🇦" }, { nombre: "Uganda", bandera: "🇺🇬" }, { nombre: "Uruguay", bandera: "🇺🇾" },
+    { nombre: "Uzbekistán", bandera: "🇺🇿" }, { nombre: "Vanuatu", bandera: "🇻🇺" }, { nombre: "Venezuela", bandera: "🇻🇪" },
+    { nombre: "Vietnam", bandera: "🇻🇳" }, { nombre: "Yemen", bandera: "🇾🇪" }, { nombre: "Yibuti", bandera: "🇩🇯" },
+    { nombre: "Zambia", bandera: "🇿🇲" }, { nombre: "Zimbabue", bandera: "🇿🇼" }
+];
+
+        const partidosFaseGrupos = [
+            { juego: 1, jornada: 1, grupo: "A", local: "México", banderaLocal: "🇲🇽", visitante: "Sudáfrica", banderaVisitante: "🇿🇦" },
+            { juego: 2, jornada: 1, grupo: "A", local: "Corea del Sur", banderaLocal: "🇰🇷", visitante: "Rep. Checa", banderaVisitante: "🇨🇿" },
+            { juego: 3, jornada: 1, grupo: "B", local: "Canadá", banderaLocal: "🇨🇦", visitante: "Bosnia y Herz.", banderaVisitante: "🇧🇦" },
+            { juego: 4, jornada: 1, grupo: "D", local: "USA", banderaLocal: "🇺🇸", visitante: "Paraguay", banderaVisitante: "🇵🇾" },
+            { juego: 5, jornada: 1, grupo: "B", local: "Qatar", banderaLocal: "🇶🇦", visitante: "Suiza", banderaVisitante: "🇨🇭" },
+            { juego: 6, jornada: 1, grupo: "C", local: "Brasil", banderaLocal: "🇧🇷", visitante: "Marruecos", banderaVisitante: "🇲🇦" },
+            { juego: 7, jornada: 1, grupo: "C", local: "Haití", banderaLocal: "🇭🇹", visitante: "Escocia", banderaVisitante: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+            { juego: 8, jornada: 1, grupo: "D", local: "Australia", banderaLocal: "🇦🇺", visitante: "Turquía", banderaVisitante: "🇹🇷" },
+            { juego: 9, jornada: 1, grupo: "E", local: "Alemania", banderaLocal: "🇩🇪", visitante: "Curazao", banderaVisitante: "🇨🇼" },
+            { juego: 10, jornada: 1, grupo: "F", local: "Países Bajos", banderaLocal: "🇳🇱", visitante: "Japón", banderaVisitante: "🇯🇵" },
+            { juego: 11, jornada: 1, grupo: "E", local: "Costa de Marfil", banderaLocal: "🇨🇮", visitante: "Ecuador", banderaVisitante: "🇪🇨" },
+            { juego: 12, jornada: 1, grupo: "F", local: "Suecia", banderaLocal: "🇸🇪", visitante: "Túnez", banderaVisitante: "🇹🇳" },
+            { juego: 13, jornada: 1, grupo: "H", local: "España", banderaLocal: "🇪🇸", visitante: "Cabo Verde", banderaVisitante: "🇨🇻" },
+            { juego: 14, jornada: 1, grupo: "G", local: "Bélgica", banderaLocal: "🇧🇪", visitante: "Egipto", banderaVisitante: "🇪🇬" },
+            { juego: 15, jornada: 1, grupo: "H", local: "Arabia Saudita", banderaLocal: "🇸🇦", visitante: "Uruguay", banderaVisitante: "🇺🇾" },
+            { juego: 16, jornada: 1, grupo: "G", local: "Irán", banderaLocal: "🇮🇷", visitante: "Nueva Zelanda", banderaVisitante: "🇳🇿" },
+            { juego: 17, jornada: 1, grupo: "I", local: "Francia", banderaLocal: "🇫🇷", visitante: "Senegal", banderaVisitante: "🇸🇳" },
+            { juego: 18, jornada: 1, grupo: "I", local: "Irak", banderaLocal: "🇮🇶", visitante: "Noruega", banderaVisitante: "🇳🇴" },
+            { juego: 19, jornada: 1, grupo: "J", local: "Argentina", banderaLocal: "🇦🇷", visitante: "Argelia", banderaVisitante: "🇩🇿" },
+            { juego: 20, jornada: 1, grupo: "J", local: "Austria", banderaLocal: "🇦🇹", visitante: "Jordania", banderaVisitante: "🇯🇴" },
+            { juego: 21, jornada: 1, grupo: "K", local: "Portugal", banderaLocal: "🇵🇹", visitante: "RD de Congo", banderaVisitante: "🇨🇩" },
+            { juego: 22, jornada: 1, grupo: "L", local: "Inglaterra", banderaLocal: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", visitante: "Croacia", banderaVisitante: "🇭🇷" },
+            { juego: 23, jornada: 1, grupo: "L", local: "Ghana", banderaLocal: "🇬🇭", visitante: "Panamá", banderaVisitante: "🇵🇦" },
+            { juego: 24, jornada: 1, grupo: "K", local: "Uzbekistán", banderaLocal: "🇺🇿", visitante: "Colombia", banderaVisitante: "🇨🇴" },
+            { juego: 25, jornada: 2, grupo: "B", local: "Suiza", banderaLocal: "🇨🇭", visitante: "Bosnia y Herz.", banderaVisitante: "🇧🇦" },
+            { juego: 26, jornada: 2, grupo: "B", local: "Canadá", banderaLocal: "🇨🇦", visitante: "Qatar", banderaVisitante: "🇶🇦" },
+            { juego: 27, jornada: 2, grupo: "A", local: "Rep. Checa", banderaLocal: "🇨🇿", visitante: "Sudáfrica", banderaVisitante: "🇿🇦" },
+            { juego: 28, jornada: 2, grupo: "A", local: "México", banderaLocal: "🇲🇽", visitante: "Corea del Sur", banderaVisitante: "🇰🇷" },
+            { juego: 29, jornada: 2, grupo: "D", local: "USA", banderaLocal: "🇺🇸", visitante: "Australia", banderaVisitante: "🇦🇺" },
+            { juego: 30, jornada: 2, grupo: "C", local: "Escocia", banderaLocal: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", visitante: "Marruecos", banderaVisitante: "🇲🇦" },
+            { juego: 31, jornada: 2, grupo: "C", local: "Brasil", banderaLocal: "🇧🇷", visitante: "Haití", banderaVisitante: "🇭🇹" },
+            { juego: 32, jornada: 2, grupo: "D", local: "Turquía", banderaLocal: "🇹🇷", visitante: "Paraguay", banderaVisitante: "🇵🇾" },
+            { juego: 33, jornada: 2, grupo: "F", local: "Países Bajos", banderaLocal: "🇳🇱", visitante: "Suecia", banderaVisitante: "🇸🇪" },
+            { juego: 34, jornada: 2, grupo: "E", local: "Alemania", banderaLocal: "🇩🇪", visitante: "Costa de Marfil", banderaVisitante: "🇨🇮" },
+            { juego: 35, jornada: 2, grupo: "E", local: "Ecuador", banderaLocal: "🇪🇨", visitante: "Curazao", banderaVisitante: "🇨🇼" },
+            { juego: 36, jornada: 2, grupo: "F", local: "Túnez", banderaLocal: "🇹🇳", visitante: "Japón", banderaVisitante: "🇯🇵" },
+            { juego: 37, jornada: 2, grupo: "H", local: "España", banderaLocal: "🇪🇸", visitante: "Arabia Saudita", banderaVisitante: "🇸🇦" },
+            { juego: 38, jornada: 2, grupo: "G", local: "Bélgica", banderaLocal: "🇧🇪", visitante: "Irán", banderaVisitante: "🇮🇷" },
+            { juego: 39, jornada: 2, grupo: "H", local: "Uruguay", banderaLocal: "🇺🇾", visitante: "Cabo Verde", banderaVisitante: "🇨🇻" },
+            { juego: 40, jornada: 2, grupo: "G", local: "Nueva Zelanda", banderaLocal: "🇳🇿", visitante: "Egipto", banderaVisitante: "🇪🇬" },
+            { juego: 41, jornada: 2, grupo: "J", local: "Argentina", banderaLocal: "🇦🇷", visitante: "Austria", banderaVisitante: "🇦🇹" },
+            { juego: 42, jornada: 2, grupo: "I", local: "Francia", banderaLocal: "🇫🇷", visitante: "Irak", banderaVisitante: "🇮🇶" },
+            { juego: 43, jornada: 2, grupo: "I", local: "Noruega", banderaLocal: "🇳🇴", visitante: "Senegal", banderaVisitante: "🇸🇳" },
+            { juego: 44, jornada: 2, grupo: "J", local: "Jordania", banderaLocal: "🇯🇴", visitante: "Argelia", banderaVisitante: "🇩🇿" },
+            { juego: 45, jornada: 2, grupo: "K", local: "Portugal", banderaLocal: "🇵🇹", visitante: "Uzbekistán", banderaVisitante: "🇺🇿" },
+            { juego: 46, jornada: 2, grupo: "L", local: "Inglaterra", banderaLocal: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", visitante: "Ghana", banderaVisitante: "🇬🇭" },
+            { juego: 47, jornada: 2, grupo: "L", local: "Panamá", banderaLocal: "🇵🇦", visitante: "Croacia", banderaVisitante: "🇭🇷" },
+            { juego: 48, jornada: 2, grupo: "K", local: "Colombia", banderaLocal: "🇨🇴", visitante: "RD de Congo", banderaVisitante: "🇨🇩" },
+            { juego: 50, jornada: 3, grupo: "B", local: "Bosnia y Herz.", banderaLocal: "🇧🇦", visitante: "Qatar", banderaVisitante: "🇶🇦" },
+            { juego: 49, jornada: 3, grupo: "B", local: "Suiza", banderaLocal: "🇨🇭", visitante: "Canadá", banderaVisitante: "🇨🇦" },
+            { juego: 51, jornada: 3, grupo: "C", local: "Marruecos", banderaLocal: "🇲🇦", visitante: "Haití", banderaVisitante: "🇭🇹" },
+            { juego: 52, jornada: 3, grupo: "C", local: "Brasil", banderaLocal: "🇧🇷", visitante: "Escocia", banderaVisitante: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+            { juego: 53, jornada: 3, grupo: "A", local: "Sudáfrica", banderaLocal: "🇿🇦", visitante: "Corea del Sur", banderaVisitante: "🇰🇷" },
+            { juego: 54, jornada: 3, grupo: "A", local: "Rep. Checa", banderaLocal: "🇨🇿", visitante: "México", banderaVisitante: "🇲🇽" },
+            { juego: 55, jornada: 3, grupo: "E", local: "Curazao", banderaLocal: "🇨🇼", visitante: "Costa de Marfil", banderaVisitante: "🇨🇮" },
+            { juego: 56, jornada: 3, grupo: "E", local: "Ecuador", banderaLocal: "🇪🇨", visitante: "Alemania", banderaVisitante: "🇩🇪" },
+            { juego: 57, jornada: 3, grupo: "F", local: "Japón", banderaLocal: "🇯🇵", visitante: "Suecia", banderaVisitante: "🇸🇪" },
+            { juego: 58, jornada: 3, grupo: "F", local: "Túnez", banderaLocal: "🇹🇳", visitante: "Países Bajos", banderaVisitante: "🇳🇱" },
+            { juego: 59, jornada: 3, grupo: "D", local: "Paraguay", banderaLocal: "🇵🇾", visitante: "Australia", banderaVisitante: "🇦🇺" },
+            { juego: 60, jornada: 3, grupo: "D", local: "Turquía", banderaLocal: "🇹🇷", visitante: "USA", banderaVisitante: "🇺🇸" },
+            { juego: 61, jornada: 3, grupo: "I", local: "Noruega", banderaLocal: "🇳🇴", visitante: "Francia", banderaVisitante: "🇫🇷" },
+            { juego: 62, jornada: 3, grupo: "I", local: "Senegal", banderaLocal: "🇸🇳", visitante: "Irak", banderaVisitante: "🇮🇶" },
+            { juego: 63, jornada: 3, grupo: "H", local: "Cabo Verde", banderaLocal: "🇨🇻", visitante: "Arabia Saudita", banderaVisitante: "🇸🇦" },
+            { juego: 64, jornada: 3, grupo: "H", local: "Uruguay", banderaLocal: "🇺🇾", visitante: "España", banderaVisitante: "🇪🇸" },
+            { juego: 65, jornada: 3, grupo: "G", local: "Egipto", banderaLocal: "🇪🇬", visitante: "Irán", banderaVisitante: "🇮🇷" },
+            { juego: 66, jornada: 3, grupo: "G", block: "G", local: "Nueva Zelanda", banderaLocal: "🇳🇿", visitante: "Bélgica", banderaVisitante: "🇧🇪" },
+            { juego: 67, jornada: 3, grupo: "L", local: "Croacia", banderaLocal: "🇭🇷", visitante: "Ghana", banderaVisitante: "🇬🇭" },
+            { juego: 68, jornada: 3, grupo: "L", local: "Panamá", banderaLocal: "🇵🇦", visitante: "Inglaterra", banderaVisitante: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+            { juego: 69, jornada: 3, grupo: "K", local: "Colombia", banderaLocal: "🇨🇴", visitante: "Portugal", banderaVisitante: "🇵🇹" },
+            { juego: 70, jornada: 3, grupo: "K", local: "RD de Congo", banderaLocal: "🇨🇩", visitante: "Uzbekistán", banderaVisitante: "🇺🇿" },
+            { juego: 71, jornada: 3, grupo: "J", local: "Argelia", banderaLocal: "🇩🇿", visitante: "Austria", banderaVisitante: "🇦🇹" },
+            { juego: 72, jornada: 3, grupo: "J", local: "Jordania", banderaLocal: "🇯🇴", visitante: "Argentina", banderaVisitante: "🇦🇷" }
+        ];
+
+        const partidosEliminatoriasEstaticos = [
+            { juego: 73, etapa: "16avos", claveL: "2A", claveV: "2B", defaultL: "2.° A", defaultV: "2.° B" },
+            { juego: 74, etapa: "16avos", claveL: "1E", claveV: "3ABCDF", defaultL: "1.° E", defaultV: "3.° A/B/C/D/F" },
+            { juego: 75, etapa: "16avos", claveL: "1F", claveV: "2C", defaultL: "1.° F", defaultV: "2.° C" },
+            { juego: 76, etapa: "16avos", claveL: "1C", claveV: "2F", defaultL: "1.° C", defaultV: "2.° F" },
+            { juego: 77, etapa: "16avos", claveL: "1I", claveV: "3CDFGH", defaultL: "1.° I", defaultV: "3.° C/D/F/G/H" },
+            { juego: 78, etapa: "16avos", claveL: "2E", claveV: "2I", defaultL: "2.° E", defaultV: "2.° I" },
+            { juego: 79, etapa: "16avos", claveL: "1A", claveV: "3CEFHI", defaultL: "1.° A", defaultV: "3.° C/E/F/H/I" },
+            { juego: 80, etapa: "16avos", claveL: "1L", claveV: "3EHIJK", defaultL: "1.° L", defaultV: "3.° E/H/I/J/K" },
+            { juego: 81, etapa: "16avos", claveL: "1D", claveV: "3BEFIJ", defaultL: "1.° D", defaultV: "3.° B/E/F/I/J" },
+            { juego: 82, etapa: "16avos", claveL: "1G", claveV: "3AEHIJ", defaultL: "1.° G", defaultV: "3.° A/E/H/I/J" },
+            { juego: 83, etapa: "16avos", claveL: "2K", claveV: "2L", defaultL: "2.° K", defaultV: "2.° L" },
+            { juego: 84, etapa: "16avos", claveL: "1H", claveV: "2J", defaultL: "1.° H", defaultV: "2.° J" },
+            { juego: 85, etapa: "16avos", claveL: "1B", claveV: "3EFGIJ", defaultL: "1.° B", defaultV: "3.° E/F/G/I/J" },
+            { juego: 86, etapa: "16avos", claveL: "1J", claveV: "2H", defaultL: "1.° J", defaultV: "2.° H" },
+            { juego: 87, etapa: "16avos", claveL: "1K", claveV: "3DEIJL", defaultL: "1.° K", defaultV: "3.° D/E/I/J/L" },
+            { juego: 88, etapa: "16avos", claveL: "2D", claveV: "2G", defaultL: "2.° D", defaultV: "2.° G" },
+            { juego: 89, etapa: "8avos", deL: 74, deV: 77 },
+            { juego: 90, etapa: "8avos", deL: 73, deV: 75 },
+            { juego: 91, etapa: "8avos", deL: 76, deV: 78 },
+            { juego: 92, etapa: "8avos", deL: 79, deV: 80 },
+            { juego: 93, etapa: "8avos", deL: 83, deV: 84 },
+            { juego: 94, etapa: "8avos", deL: 81, deV: 82 },
+            { juego: 95, etapa: "8avos", deL: 86, deV: 88 },
+            { juego: 96, etapa: "8avos", deL: 85, deV: 87 },
+            { juego: 97, etapa: "cuartos", deL: 89, deV: 90 },
+            { juego: 98, etapa: "cuartos", deL: 93, deV: 94 },
+            { juego: 99, etapa: "cuartos", deL: 91, deV: 92 },
+            { juego: 100, etapa: "cuartos", deL: 95, deV: 96 },
+            { juego: 101, etapa: "semis", deL: 97, deV: 98 },
+            { juego: 102, etapa: "semis", deL: 99, deV: 100 },
+            { juego: 103, etapa: "final-3ra", deL: 101, deV: 102, perdedores: true },
+            { juego: 104, etapa: "final", deL: 101, deV: 102 }
+        ];
+
+        let currentFilter = 'g-todos';
+        let currentTableSubTab = 'grupos';
+
+        function changeMainSection(section) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.bottom-btn').forEach(el => el.classList.remove('active'));
+
+            if(section === 'calendario') {
+                document.getElementById('section-calendario').classList.add('active');
+                document.getElementById('btn-nav-cal').classList.add('active');
+                renderMatches();
+            } else if(section === 'tablas') {
+                document.getElementById('section-tablas').classList.add('active');
+                document.getElementById('btn-nav-tab').classList.add('active');
+                renderTablasView();
+            } else if(section === 'perfil') {
+                document.getElementById('section-perfil').classList.add('active');
+                document.getElementById('btn-nav-per').classList.add('active');
+                cargarDatosPerfilVisual();
+            }
+        }
+
+        function switchTableSubTab(sub) {
+            currentTableSubTab = sub;
+            document.getElementById('tab-sub-grupos').classList.remove('active');
+            document.getElementById('tab-sub-terceros').classList.remove('active');
+            
+            if(sub === 'grupos') {
+                document.getElementById('tab-sub-grupos').classList.add('active');
+                document.getElementById('sub-container-grupos').style.display = "block";
+                document.getElementById('sub-container-terceros').style.display = "none";
+            } else {
+                document.getElementById('tab-sub-terceros').classList.add('active');
+                document.getElementById('sub-container-grupos').style.display = "none";
+                document.getElementById('sub-container-terceros').style.display = "block";
+            }
+            renderTablasView();
+        }
+
+        function filterPhase(phase) {
+            currentFilter = phase;
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            renderMatches();
+        }
+
+        function parseScore(val) {
+            if (val === null || val === undefined || val === "") return NaN;
+            let parsed = parseInt(val, 10);
+            return isNaN(parsed) ? NaN : parsed;
+        }
+
+        function calcularDatosDeTorneo() {
+            const gruposIds = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+            let clasificadosPorGrupo = {};
+
+            gruposIds.forEach(g => {
+                let estructuraEquipos = {};
+                partidosFaseGrupos.filter(p => p.grupo === g).forEach(p => {
+                    if (!estructuraEquipos[p.local]) estructuraEquipos[p.local] = { nombre: p.local, bandera: p.banderaLocal, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, grupo: g, duelos: [] };
+                    if (!estructuraEquipos[p.visitante]) estructuraEquipos[p.visitante] = { nombre: p.visitante, bandera: p.banderaVisitante, pj: 0, pg: 0, pe: 0, pp: 0, gf: 0, gc: 0, dg: 0, pts: 0, grupo: g, duelos: [] };
+                });
+
+                partidosFaseGrupos.filter(p => p.grupo === g).forEach(p => {
+                    const golesL = parseScore(localStorage.getItem(`juego_${p.juego}_local`));
+                    const golesV = parseScore(localStorage.getItem(`juego_${p.juego}_visit`));
+
+                    if (!isNaN(golesL) && !isNaN(golesV)) {
+                        estructuraEquipos[p.local].pj++;
+                        estructuraEquipos[p.visitante].pj++;
+                        estructuraEquipos[p.local].gf += golesL;
+                        estructuraEquipos[p.local].gc += golesV;
+                        estructuraEquipos[p.visitante].gf += golesV;
+                        estructuraEquipos[p.visitante].gc += golesL;
+
+                        estructuraEquipos[p.local].duelos.push({ rival: p.visitante, gf: golesL, gc: golesV });
+                        estructuraEquipos[p.visitante].duelos.push({ rival: p.local, gf: golesV, gc: golesL });
+
+                        if (golesL > golesV) {
+                            estructuraEquipos[p.local].pg++;
+                            estructuraEquipos[p.local].pts += 3;
+                            estructuraEquipos[p.visitante].pp++;
+                        } else if (golesL < golesV) {
+                            estructuraEquipos[p.visitante].pg++;
+                            estructuraEquipos[p.visitante].pts += 3;
+                            estructuraEquipos[p.local].pp++;
+                        } else {
+                            estructuraEquipos[p.local].pe++;
+                            estructuraEquipos[p.local].pts += 1;
+                            estructuraEquipos[p.visitante].pe++;
+                            estructuraEquipos[p.visitante].pts += 1;
+                        }
+                    }
+                });
+
+                let listaEquipos = Object.values(estructuraEquipos).map(eq => {
+                    eq.dg = eq.gf - eq.gc;
+                    return eq;
+                });
+
+                listaEquipos.sort((a, b) => {
+                    if (b.pts !== a.pts) return b.pts - a.pts;
+                    let contra = a.duelos.find(d => d.rival === b.nombre);
+                    if (contra) {
+                        if (contra.gf > contra.gc) return -1;
+                        if (contra.gf < contra.gc) return 1;
+                    }
+                    if (b.dg !== a.dg) return b.dg - a.dg;
+                    if (b.gf !== a.gf) return b.gf - a.gf;
+                    return 0;
+                });
+
+                clasificadosPorGrupo[g] = listaEquipos;
+            });
+
+            let todosLosTerceros = [];
+            gruposIds.forEach(g => {
+                if(clasificadosPorGrupo[g] && clasificadosPorGrupo[g].length >= 3) {
+                    todosLosTerceros.push(clasificadosPorGrupo[g][2]);
+                }
+            });
+
+            todosLosTerceros.sort((a, b) => {
+                if (b.pts !== a.pts) return b.pts - a.pts;
+                if (b.dg !== a.dg) return b.dg - a.dg;
+                if (b.gf !== a.gf) return b.gf - a.gf;
+                return 0;
+            });
+
+            return {
+                grupos: clasificadosPorGrupo,
+                tercerosTodos: todosLosTerceros,
+                terceros8Clasificados: todosLosTerceros.slice(0, 8)
+            };
+        }
+
+        function obtenerCrucesDieciseisavosDinamicos(datos) {
+            let mapaCruces = {};
+            const gruposIds = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+            
+            gruposIds.forEach(g => {
+                const arr = datos.grupos[g];
+                mapaCruces[`1${g}`] = arr[0] && arr[0].pj > 0 ? { nombre: arr[0].nombre, bandera: arr[0].bandera, procedencia: `1.° ${g}` } : null;
+                mapaCruces[`2${g}`] = arr[1] && arr[1].pj > 0 ? { nombre: arr[1].nombre, bandera: arr[1].bandera, procedencia: `2.° ${g}` } : null;
+            });
+
+            const llavesTerceros = ["3ABCDF", "3CDFGH", "3BEFIJ", "3AEHIJ", "3CEFHI", "3EHIJK", "3EFGIJ", "3DEIJL"];
+            llavesTerceros.forEach(k => mapaCruces[k] = null);
+
+            let tList = datos.terceros8Clasificados.filter(x => x.pj > 0).sort((a,b) => a.grupo.localeCompare(b.grupo));
+            
+            tList.forEach(terceroEquipo => {
+                let indiceTerceroGral = datos.tercerosTodos.findIndex(x => x.nombre === terceroEquipo.nombre);
+                let numClasifTercero = indiceTerceroGral !== -1 ? (indiceTerceroGral + 1) : 3;
+
+                let colocado = false;
+                for(let slot of llavesTerceros) {
+                    if(slot.includes(terceroEquipo.grupo) && !mapaCruces[slot]) {
+                        mapaCruces[slot] = { nombre: terceroEquipo.nombre, bandera: terceroEquipo.bandera, procedencia: `3.° ${terceroEquipo.grupo} (#${numClasifTercero} T)` };
+                        colocado = true;
+                        break;
+                    }
+                }
+                if(!colocado) {
+                    for(let slot of llavesTerceros) {
+                        if(!mapaCruces[slot]) {
+                            mapaCruces[slot] = { nombre: terceroEquipo.nombre, bandera: terceroEquipo.bandera, procedencia: `3.° ${terceroEquipo.grupo} (#${numClasifTercero} T)` };
+                            break;
+                        }
+                    }
+                }
+            });
+
+            return mapaCruces;
+        }
+
+        function renderMatches() {
+            const container = document.getElementById('matches-list-container');
+            container.innerHTML = "";
+
+            if (currentFilter === 'g-el') {
+                const datosTorneo = calcularDatosDeTorneo();
+                const mapeoEquipos = obtenerCrucesDieciseisavosDinamicos(datosTorneo);
+                let memoriaResultadosEliminatorias = {};
+
+                partidosEliminatoriasEstaticos.forEach(partido => {
+                    let localCalculado = { nombre: "", bandera: "🏳️", procedencia: "" };
+                    let visitanteCalculado = { nombre: "", bandera: "🏳️", procedencia: "" };
+
+                    if(partido.etapa === "16avos") {
+                        let lData = mapeoEquipos[partido.claveL];
+                        let vData = mapeoEquipos[partido.claveV];
+                        if(lData) localCalculado = lData; else localCalculado = { nombre: partido.defaultL, bandera: "🏳️", procedencia: partido.claveL };
+                        if(vData) visitanteCalculado = vData; else visitanteCalculado = { nombre: partido.defaultV, bandera: "🏳️", procedencia: partido.claveV };
+                    } else {
+                        let scoreL = parseScore(localStorage.getItem(`juego_${partido.deL}_local`));
+                        let scoreV = parseScore(localStorage.getItem(`juego_${partido.deL}_visit`));
+                        
+                        if(!isNaN(scoreL) && !isNaN(scoreV)) {
+                            let itemG = (scoreL >= scoreV) ? memoriaResultadosEliminatorias[partido.deL]?.L : memoriaResultadosEliminatorias[partido.deL]?.V;
+                            if(partido.perdedores) {
+                                itemG = (scoreL < scoreV) ? memoriaResultadosEliminatorias[partido.deL]?.L : memoriaResultadosEliminatorias[partido.deL]?.V;
+                            }
+                            if(itemG && itemG.nombre) localCalculado = { nombre: itemG.nombre, bandera: itemG.bandera, procedencia: `${partido.perdedores ? 'Perd.' : 'Gan.'} J${partido.deL}` };
+                            else localCalculado = { nombre: `Ganador J${partido.deL}`, bandera: "🏳️", procedencia: "" };
+                        } else {
+                            localCalculado = { nombre: partido.perdedores ? `Perdedor J${partido.deL}` : `Ganador J${partido.deL}`, bandera: "🏳️", procedencia: "" };
+                        }
+
+                        let scoreL_v = parseScore(localStorage.getItem(`juego_${partido.deV}_local`));
+                        let scoreV_v = parseScore(localStorage.getItem(`juego_${partido.deV}_visit`));
+                        
+                        if(!isNaN(scoreL_v) && !isNaN(scoreV_v)) {
+                            let itemG = (scoreL_v >= scoreV_v) ? memoriaResultadosEliminatorias[partido.deV]?.L : memoriaResultadosEliminatorias[partido.deV]?.V;
+                            if(partido.perdedores) {
+                                itemG = (scoreL_v < scoreV_v) ? memoriaResultadosEliminatorias[partido.deV]?.L : memoriaResultadosEliminatorias[partido.deV]?.V;
+                            }
+                            if(itemG && itemG.nombre) visitanteCalculado = { nombre: itemG.nombre, bandera: itemG.bandera, procedencia: `${partido.perdedores ? 'Perd.' : 'Gan.'} J${partido.deV}` };
+                            else visitanteCalculado = { nombre: `Ganador J${partido.deV}`, bandera: "🏳️", procedencia: "" };
+                        } else {
+                            visitanteCalculado = { nombre: partido.perdedores ? `Perdedor J${partido.deV}` : `Ganador J${partido.deV}`, bandera: "🏳️", procedencia: "" };
+                        }
+                    }
+
+                    memoriaResultadosEliminatorias[partido.juego] = { L: localCalculado, V: visitanteCalculado };
+
+                    const localKey = `juego_${partido.juego}_local`;
+                    const visitKey = `juego_${partido.juego}_visit`;
+                    const valLocal = localStorage.getItem(localKey) || "";
+                    const valVisit = localStorage.getItem(visitKey) || "";
+
+                    const card = document.createElement('div');
+                    card.className = "match-card";
+                    card.innerHTML = `
+                        <div class="match-meta">Eliminación Directa • ${partido.etapa.toUpperCase()} • Juego #${partido.juego}</div>
+                        <div class="match-row">
+                            <div class="team-box">
+                                <span class="team-flag">${localCalculado.bandera}</span>
+                                <span class="team-name">${localCalculado.nombre}</span>
+                                <span class="team-origin">${localCalculado.procedencia || '—'}</span>
+                            </div>
+                            <div class="score-container">
+                                <input type="number" class="score-input" value="${valLocal}" onchange="updateScore('${localKey}', this.value)" min="0">
+                                <span class="vs-text">VS</span>
+                                <input type="number" class="score-input" value="${valVisit}" onchange="updateScore('${visitKey}', this.value)" min="0">
+                            </div>
+                            <div class="team-box">
+                                <span class="team-flag">${visitanteCalculado.bandera}</span>
+                                <span class="team-name">${visitanteCalculado.nombre}</span>
+                                <span class="team-origin">${visitanteCalculado.procedencia || '—'}</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                let listadoAFiltrar = [];
+                if (currentFilter === 'g-todos') listadoAFiltrar = partidosFaseGrupos;
+                else if (currentFilter === 'g-j1') listadoAFiltrar = partidosFaseGrupos.filter(p => p.jornada === 1);
+                else if (currentFilter === 'g-j2') listadoAFiltrar = partidosFaseGrupos.filter(p => p.jornada === 2);
+                else if (currentFilter === 'g-j3') listadoAFiltrar = partidosFaseGrupos.filter(p => p.jornada === 3);
+
+                listadoAFiltrar.forEach(partido => {
+                    const localKey = `juego_${partido.juego}_local`;
+                    const visitKey = `juego_${partido.juego}_visit`;
+                    const valLocal = localStorage.getItem(localKey) || "";
+                    const valVisit = localStorage.getItem(visitKey) || "";
+
+                    const card = document.createElement('div');
+                    card.className = "match-card";
+                    card.innerHTML = `
+                        <div class="match-meta">Fase de Grupos • Grupo ${partido.grupo} • Juego #${partido.juego}</div>
+                        <div class="match-row">
+                            <div class="team-box">
+                                <span class="team-flag">${partido.banderaLocal}</span>
+                                <span class="team-name">${partido.local}</span>
+                            </div>
+                            <div class="score-container">
+                                <input type="number" class="score-input" value="${valLocal}" onchange="updateScore('${localKey}', this.value)" min="0">
+                                <span class="vs-text">VS</span>
+                                <input type="number" class="score-input" value="${valVisit}" onchange="updateScore('${visitKey}', this.value)" min="0">
+                            </div>
+                            <div class="team-box">
+                                <span class="team-flag">${partido.banderaVisitante}</span>
+                                <span class="team-name">${partido.visitante}</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        function updateScore(key, val) {
+            if(val.trim() === "") localStorage.removeItem(key);
+            else localStorage.setItem(key, parseInt(val, 10));
+            actualizarTickerDinamico();
+            if (currentFilter === 'g-el') renderMatches();
+        }
+
+        function renderTablasView() {
+            const datos = calcularDatosDeTorneo();
+            if(currentTableSubTab === 'grupos') {
+                const subContainer = document.getElementById('sub-container-grupos');
+                subContainer.innerHTML = "";
+                const gruposIds = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+                gruposIds.forEach(g => {
+                    const gDiv = document.createElement('div');
+                    gDiv.className = "group-title";
+                    gDiv.innerText = `GRUPO ${g}`;
+                    subContainer.appendChild(gDiv);
+
+                    const tableResp = document.createElement('div');
+                    tableResp.className = "table-responsive";
+                    let tableHTML = `<table><thead><tr><th style="text-align:left; padding-left:10px;">Equipo</th><th>PTS</th><th>PJ</th><th>DG</th><th>GF</th></tr></thead><tbody>`;
+                    datos.grupos[g].forEach((eq, index) => {
+                        let claseFila = "";
+                        if(index < 2) claseFila = "class='highlight-row' style='border-left: 3px solid var(--success);'";
+                        else if(index === 2) claseFila = "style='border-left: 3px solid var(--accent);'";
+                        tableHTML += `<tr ${claseFila}><td class="team-name-cell"><span style="font-size:1.2rem; margin-right:5px;">${eq.bandera}</span>${eq.nombre}</td><td><strong>${eq.pts}</strong></td><td>${eq.pj}</td><td>${eq.dg}</td><td>${eq.gf}</td></tr>`;
+                    });
+                    tableHTML += `</tbody></table>`;
+                    tableResp.innerHTML = tableHTML;
+                    subContainer.appendChild(tableResp);
+                });
+            } else {
+                const subContainer = document.getElementById('sub-container-terceros');
+                subContainer.innerHTML = "";
+                const title = document.createElement('div');
+                title.className = "group-title";
+                title.innerText = "TABLA DE COMPARATIVA DE TERCEROS LUGARES";
+                subContainer.appendChild(title);
+
+                const tableResp = document.createElement('div');
+                tableResp.className = "table-responsive";
+                let tableHTML = `<table><thead><tr><th style="text-align:left; padding-left:10px;">Equipo</th><th>Gr</th><th>PTS</th><th>PJ</th><th>DG</th><th>GF</th></tr></thead><tbody>`;
+                datos.tercerosTodos.forEach((eq, index) => {
+                    let claseFila = "";
+                    if(index < 8) claseFila = "class='highlight-row' style='border-left: 3px solid var(--success);'";
+                    else claseFila = "style='border-left: 3px solid #dc3545;'";
+                    tableHTML += `<tr ${claseFila}><td class="team-name-cell"><span style="font-size:1.2rem; margin-right:5px;">${eq.bandera}</span>${eq.nombre}</td><td>${eq.grupo}</td><td><strong>${eq.pts}</strong></td><td>${eq.pj}</td><td>${eq.dg}</td><td>${eq.gf}</td></tr>`;
+                });
+                tableHTML += `</tbody></table>`;
+                tableResp.innerHTML = tableHTML;
+                subContainer.appendChild(tableResp);
+            }
+        }
+
+        /* --- LOGICA EXCLUSIVA DEL PERFIL (PAISES Y BANDERAS) --- */
+        function inyectarListasDesplegables() {
+            const selects = ['input-edit-nacion', 'input-edit-favorito', 'input-edit-campeon'];
+            selects.forEach(id => {
+                const selectElement = document.getElementById(id);
+                if(selectElement && selectElement.options.length === 0) {
+                    let optionsHTML = '<option value="">🏳️ Selecciona un país</option>';
+                    paisesMundialistas.forEach(p => {
+                        optionsHTML += `<option value="${p.bandera}"> ${p.bandera} ${p.nombre}</option>`;
+                    });
+                    selectElement.innerHTML = optionsHTML;
+                }
+            });
+        }
+
+        function cargarDatosPerfilVisual() {
+            const username = localStorage.getItem('user_profile_name') || "Usuario Mundialista";
+            const nacionFlag = localStorage.getItem('user_profile_nacion') || "❓";
+            const favoritoFlag = localStorage.getItem('user_profile_favorito') || "❓";
+            const campeonFlag = localStorage.getItem('user_profile_campeon') || "❓";
+
+            document.getElementById('lbl-display-username').innerText = username;
+            document.getElementById('lbl-display-nacion').innerText = nacionFlag;
+            document.getElementById('lbl-display-favorito').innerText = favoritoFlag;
+            document.getElementById('lbl-display-campeon').innerText = campeonFlag;
+
+            const savedAvatar = localStorage.getItem('user_profile_avatar');
+            if(savedAvatar) document.getElementById('user-avatar').src = savedAvatar;
+        }
+
+        function toggleEditProfile(show) {
+            const viewMode = document.getElementById('profile-view-mode');
+            const editMode = document.getElementById('profile-edit-mode');
+
+            if(show) {
+                inyectarListasDesplegables();
+                viewMode.style.display = "none";
+                editMode.classList.add('open');
+
+                document.getElementById('input-edit-username').value = localStorage.getItem('user_profile_name') || "Usuario Mundialista";
+                document.getElementById('input-edit-nacion').value = localStorage.getItem('user_profile_nacion') || "";
+                document.getElementById('input-edit-favorito').value = localStorage.getItem('user_profile_favorito') || "";
+                document.getElementById('input-edit-campeon').value = localStorage.getItem('user_profile_campeon') || "";
+            } else {
+                viewMode.style.display = "block";
+                editMode.classList.remove('open');
+            }
+        }
+
+        function saveProfileData() {
+            const userVal = document.getElementById('input-edit-username').value.trim();
+            const nacFlag = document.getElementById('input-edit-nacion').value;
+            const favFlag = document.getElementById('input-edit-favorito').value;
+            const camFlag = document.getElementById('input-edit-campeon').value;
+
+            localStorage.setItem('user_profile_name', userVal || "Usuario Mundialista");
+            localStorage.setItem('user_profile_nacion', nacFlag || "❓");
+            localStorage.setItem('user_profile_favorito', favFlag || "❓");
+            localStorage.setItem('user_profile_campeon', camFlag || "❓");
+
+            toggleEditProfile(false);
+            cargarDatosPerfilVisual();
+        }
+
+        function uploadAvatar() {
+            const file = document.getElementById('avatar-uploader').files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    localStorage.setItem('user_profile_avatar', reader.result);
+                    document.getElementById('user-avatar').src = reader.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        /* --- MODAL DE COMPARTIR INTERACTIVO --- */
+        function toggleShareModal(show) {
+            const modal = document.getElementById('share-modal');
+            if(show) modal.classList.add('open');
+            else modal.classList.remove('open');
+        }
+
+        function closeModalOnOuterClick(e) {
+            if(e.target.id === 'share-modal') toggleShareModal(false);
+        }
+
+        function executeShareAction(platform) {
+            let conteo = 0;
+            for (let i = 1; i <= 72; i++) {
+                if (localStorage.getItem(`juego_${i}_local`) !== null) conteo++;
+            }
+            const txt = `🏆 ¡Mira mi Calendario del Mundial 2026! Ya completé los pronósticos de ${conteo}/72 partidos. ¿Quién es tu campeón? ⚽`;
+            console.log(`Abriendo ventana de inicio de sesión para compartir en: ${platform}`);
+            toggleShareModal(false);
+        }
+
+        function goToMarketplace() {
+            alert("Redirigiendo de forma segura al Marketplace oficial...");
+        }
+
+        function actualizarTickerDinamico() {
+            let conteo = 0;
+            for (let i = 1; i <= 72; i++) {
+                if (localStorage.getItem(`juego_${i}_local`) !== null) conteo++;
+            }
+            document.getElementById('ticker-text').innerText = `⚽ Has completado ${conteo} de 72 partidos de la Fase de Grupos • Tu árbol de Eliminatorias se calcula bajo regla oficial FIFA 2026 ⚽`;
+        }
+
+        window.onload = function() {
+            renderMatches();
+            actualizarTickerDinamico();
+            cargarDatosPerfilVisual();
+        };
+    </script>
+      <div style="text-align: center; padding: 20px; color: #a0a5bc; font-size: 0.75rem; opacity: 0.7;">
+        App Design by Artux
+    </div>
+</body>
+</html>
